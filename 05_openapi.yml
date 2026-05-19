@@ -1,0 +1,535 @@
+openapi: 3.0.3
+info:
+  title: Todo App Board & Task REST API
+  description: |-
+    Backend REST API for managing Kanban boards, tasks, and comments.
+    Enforces status transitions: Open -> InProgress -> Done.
+    Restricts comment modifications and creations to tasks in 'InProgress' status.
+    Supports logical soft-deletes and cascading inactive-state queries.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5086
+    description: Local development HTTP server
+  - url: https://localhost:7258
+    description: Local development HTTPS server
+paths:
+  /api/v1/boards:
+    get:
+      summary: Retrieve all boards
+      description: Get all boards. By default, only retrieves active boards unless includeInactive is set to true.
+      parameters:
+        - name: includeInactive
+          in: query
+          description: Whether to include inactive (soft-deleted) boards
+          required: false
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: A list of boards
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Board'
+    post:
+      summary: Create a new board
+      description: Creates a board with a title and an optional description.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBoardRequest'
+      responses:
+        '201':
+          description: Board created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Board'
+        '400':
+          description: Validation or request body error
+
+  /api/v1/boards/{id}:
+    get:
+      summary: Get board by ID
+      description: Retrieves a board's details by its ID. Active boards only.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the board
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Board details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Board'
+        '404':
+          description: Board not found or inactive
+    patch:
+      summary: Update a board
+      description: Updates the title and description of an active board.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the board
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBoardRequest'
+      responses:
+        '200':
+          description: Board updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Board'
+        '400':
+          description: Validation error
+        '404':
+          description: Board not found or inactive
+
+  /api/v1/boards/{id}/status:
+    post:
+      summary: Enable or disable a board
+      description: Performs a logic delete (soft-delete) or reactivation of a board.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the board
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetBoardStatusRequest'
+      responses:
+        '200':
+          description: Board status updated successfully
+        '400':
+          description: Invalid body parameters
+        '404':
+          description: Board not found
+
+  /api/v1/boards/{boardId}/comments:
+    get:
+      summary: Get all comments in a board for InProgress tasks
+      description: Retrieves all active comments posted on tasks that belong to the specified board and are currently in the 'InProgress' status.
+      parameters:
+        - name: boardId
+          in: path
+          required: true
+          description: The ID of the board
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of active comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        '404':
+          description: Board not found or inactive
+
+  /api/v1/tasks:
+    post:
+      summary: Create a task
+      description: Creates a new task inside a specific active board. Initial status is 'Open'.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Validation error or board is inactive/does not exist
+
+  /api/v1/tasks/{id}:
+    get:
+      summary: Get task by ID
+      description: Retrieves task details. Task must be active and inside an active board.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the task
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Task details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found or inactive
+    patch:
+      summary: Update task details
+      description: Updates the title and description of an active task.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the task
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskRequest'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Validation error
+        '404':
+          description: Task not found or inactive
+
+  /api/v1/tasks/board/{boardId}:
+    get:
+      summary: Get all tasks in a board
+      description: Retrieves all active tasks associated with an active board.
+      parameters:
+        - name: boardId
+          in: path
+          required: true
+          description: The ID of the board
+          schema:
+            type: integer
+        - name: includeInactive
+          in: query
+          required: false
+          description: Whether to include soft-deleted tasks
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: A list of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '404':
+          description: Board not found or inactive
+
+  /api/v1/tasks/{id}/status:
+    post:
+      summary: Update task status
+      description: |-
+        Moves a task along the workflow: Open -> InProgress -> Done.
+        - Moving from Open directly to Done is forbidden.
+        - Moving backwards (e.g., InProgress -> Open) is forbidden.
+        - Transitioning to Done sets the CloseDate timestamp.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the task
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskStatusRequest'
+      responses:
+        '200':
+          description: Task status updated successfully
+        '400':
+          description: Invalid status transition or format
+        '404':
+          description: Task not found or inactive
+
+  /api/v1/tasks/{id}/comment:
+    post:
+      summary: Add a comment to a task
+      description: Adds a comment to a task. Comment creation is only allowed if the task status is currently 'InProgress'.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the task
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCommentRequest'
+      responses:
+        '200':
+          description: Comment added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '400':
+          description: Task is not 'InProgress', empty comment, or task is inactive
+        '404':
+          description: Task not found
+
+  /api/v1/tasks/{id}/comments:
+    get:
+      summary: Get all comments for a task
+      description: Retrieves all active comments associated with the specified task.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the task
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        '404':
+          description: Task not found or inactive
+
+  /api/v1/tasks/comments/{commentId}:
+    patch:
+      summary: Update a comment
+      description: Modifies the text of an active comment. Modification is only allowed if the associated task is in status 'InProgress'.
+      parameters:
+        - name: commentId
+          in: path
+          required: true
+          description: The ID of the comment
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCommentRequest'
+      responses:
+        '200':
+          description: Comment updated successfully
+        '400':
+          description: Validation error, empty text, or associated task is not in status 'InProgress'
+        '404':
+          description: Comment not found or inactive
+    delete:
+      summary: Remove a comment
+      description: Performs a soft delete on a comment. Removal is only allowed if the associated task is in status 'InProgress'.
+      parameters:
+        - name: commentId
+          in: path
+          required: true
+          description: The ID of the comment
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Comment removed successfully
+        '400':
+          description: Associated task is not in status 'InProgress'
+        '404':
+          description: Comment not found or inactive
+
+components:
+  schemas:
+    Board:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Development Board"
+        description:
+          type: string
+          example: "Sprints and product backlog management"
+        isActive:
+          type: boolean
+          example: true
+    CreateBoardRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: "Development Board"
+        description:
+          type: string
+          maxLength: 500
+          example: "Sprints and product backlog management"
+    UpdateBoardRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: "Renamed Board"
+        description:
+          type: string
+          maxLength: 500
+          example: "Updated description for the board"
+    SetBoardStatusRequest:
+      type: object
+      required:
+        - isActive
+      properties:
+        isActive:
+          type: boolean
+          example: false
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Implement JWT auth"
+        description:
+          type: string
+          example: "Establish secure backend authentication endpoints"
+        boardId:
+          type: integer
+          example: 1
+        status:
+          type: string
+          enum: [Open, InProgress, Done]
+          example: "Open"
+        isActive:
+          type: boolean
+          example: true
+        openDate:
+          type: string
+          format: date-time
+          example: "2026-05-19T09:42:00Z"
+        closeDate:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+    CreateTaskRequest:
+      type: object
+      required:
+        - boardId
+        - title
+      properties:
+        boardId:
+          type: integer
+          example: 1
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: "Implement JWT auth"
+        description:
+          type: string
+          maxLength: 1000
+          example: "Establish secure backend authentication endpoints"
+    UpdateTaskRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: "Implement OAuth2 / JWT auth"
+        description:
+          type: string
+          maxLength: 1000
+          example: "Establish secure backend authentication endpoints using standard protocol"
+    UpdateTaskStatusRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [Open, InProgress, Done]
+          example: "InProgress"
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 4
+        commentText:
+          type: string
+          example: "Database migration file is done."
+        datePost:
+          type: string
+          format: date-time
+          example: "2026-05-19T09:44:00Z"
+        isActive:
+          type: boolean
+          example: true
+    AddCommentRequest:
+      type: object
+      required:
+        - comment
+      properties:
+        comment:
+          type: string
+          minLength: 1
+          maxLength: 500
+          example: "Database migration file is done."
+    UpdateCommentRequest:
+      type: object
+      required:
+        - comment
+      properties:
+        comment:
+          type: string
+          minLength: 1
+          maxLength: 500
+          example: "Updated migration script is ready."

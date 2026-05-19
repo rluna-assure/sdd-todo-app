@@ -45,3 +45,18 @@
 	- if one task is moved to in-progress
 	    - input: id, status
 	    - output: status 200 (ok)
+	- Comments in task where status is in-progress
+	    - input: id, comment
+	    - output: status 200 (ok)
+	- Get all comments where task is in-progress
+	    - input: id
+	    - output: status 200 (ok)
+	- Remove comment where task is in-progress
+	    - input: id
+	    - output: status 200 (ok)
+	- Update comment where task is in-progress
+	    - input: id, comment
+	    - output: status 200 (ok)
+	- Get all comments in Board where ticket is in-progress
+	    - input: id
+	    - output: status 200 (ok)
