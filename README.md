@@ -6,4 +6,11 @@ It Allows create multiple tasks in different boards.
 	
 [[00_initial_requeriments]]
 
+- 1 Run by CMD
+	##### Run
+	dotnet run
+	#### Tests
+	dotnet test
 
+- 2 Run in VS
+	Open project in Visual Studio and run the application in debug mode.

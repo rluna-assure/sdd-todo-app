@@ -8,9 +8,7 @@ info:
     Supports logical soft-deletes and cascading inactive-state queries.
   version: 1.0.0
 servers:
-  - url: http://localhost:5086
-    description: Local development HTTP server
-  - url: https://localhost:7258
+  - url: https://localhost:7274
     description: Local development HTTPS server
 paths:
   /api/v1/boards:
@@ -63,7 +61,7 @@ paths:
           required: true
           description: The ID of the board
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: Board details
@@ -82,7 +80,7 @@ paths:
           required: true
           description: The ID of the board
           schema:
-            type: integer
+            type: string
       requestBody:
         required: true
         content:
@@ -111,7 +109,7 @@ paths:
           required: true
           description: The ID of the board
           schema:
-            type: integer
+            type: string
       requestBody:
         required: true
         content:
@@ -136,7 +134,7 @@ paths:
           required: true
           description: The ID of the board
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: A list of active comments
@@ -179,7 +177,7 @@ paths:
           required: true
           description: The ID of the task
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: Task details
@@ -198,7 +196,7 @@ paths:
           required: true
           description: The ID of the task
           schema:
-            type: integer
+            type: string
       requestBody:
         required: true
         content:
@@ -227,7 +225,7 @@ paths:
           required: true
           description: The ID of the board
           schema:
-            type: integer
+            type: string
         - name: includeInactive
           in: query
           required: false
@@ -261,7 +259,7 @@ paths:
           required: true
           description: The ID of the task
           schema:
-            type: integer
+            type: string
       requestBody:
         required: true
         content:
@@ -286,7 +284,7 @@ paths:
           required: true
           description: The ID of the task
           schema:
-            type: integer
+            type: string
       requestBody:
         required: true
         content:
@@ -315,7 +313,7 @@ paths:
           required: true
           description: The ID of the task
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: A list of comments
@@ -338,7 +336,7 @@ paths:
           required: true
           description: The ID of the comment
           schema:
-            type: integer
+            type: string
       requestBody:
         required: true
         content:
@@ -361,7 +359,7 @@ paths:
           required: true
           description: The ID of the comment
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: Comment removed successfully
@@ -376,8 +374,8 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          example: 1
+          type: Guid
+          example: "00000000-0000-0000-0000-000000000000"
         title:
           type: string
           example: "Development Board"
@@ -428,8 +426,8 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          example: 1
+          type: string
+          example: "00000000-0000-0000-0000-000000000000"
         title:
           type: string
           example: "Implement JWT auth"
@@ -437,8 +435,8 @@ components:
           type: string
           example: "Establish secure backend authentication endpoints"
         boardId:
-          type: integer
-          example: 1
+          type: string
+          example: "00000000-0000-0000-0000-000000000000"
         status:
           type: string
           enum: [Open, InProgress, Done]
@@ -462,8 +460,8 @@ components:
         - title
       properties:
         boardId:
-          type: integer
-          example: 1
+          type: string
+          example: "00000000-0000-0000-0000-000000000000"
         title:
           type: string
           minLength: 1
@@ -501,8 +499,8 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          example: 4
+          type: string
+          example: "00000000-0000-0000-0000-000000000000"
         commentText:
           type: string
           example: "Database migration file is done."

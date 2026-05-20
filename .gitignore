@@ -1,1 +1,56 @@
+# --- Standard Visual Studio and .NET GitIgnore ---
+
+# Build outputs
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio files
+.vs/
+.vs-user/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.opendb
+
+# Testing
+TestResults/
+*.trx
+*.coverage
+
+# User secrets
+secrets.json
+.microsoft/usersecrets/
+
+# IDE / Editor folders (VS Code, Rider, ReSharper)
+.vscode/
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.resharper
+*.DotSettings.user
+
+# Publish outputs
+*.deployproj
+*.publishproj
+FolderProfile.pubxml
+*.pubxml.user
+publish/
+
+# Custom local user rules
 *.zip

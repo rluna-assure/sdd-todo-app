@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "8d8be2c1e2853141",
+        "id": "5f08097f51a1e36a",
         "type": "tabs",
         "children": [
           {
-            "id": "3959798dab24f927",
+            "id": "bbc4972686b25cd7",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "02_user-stories.md",
+                "file": "04_unit-tests.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "02_user-stories"
+              "title": "04_unit-tests"
             }
           }
         ]
@@ -183,15 +183,27 @@
       "bases:Create new base": false
     }
   },
-  "active": "3959798dab24f927",
+  "active": "bbc4972686b25cd7",
   "lastOpenFiles": [
-    "01_vision.md",
     "00_initial_requeriments.md",
-    "README.md",
+    "04_unit-tests.md",
     "04_openapi.md",
-    "03_data-model.md",
     "02_user-stories.md",
-    "ia.zip",
+    "prompts.md",
+    "TodoApp.Tests/bin/Debug/net9.0/TodoApp.Tests.pdb",
+    "TodoApp.Tests/obj/Debug/net9.0/ref/TodoApp.Tests.dll",
+    "TodoApp.Tests/bin/Debug/net9.0/TodoApp.Tests.dll",
+    "TodoApp.Tests/bin/Debug/net9.0/TodoApp.Tests.runtimeconfig.json",
+    "TodoApp.Tests/obj/Debug/net9.0/TodoApp.Tests.genruntimeconfig.cache",
+    "TodoApp.Tests/bin/Debug/net9.0/TodoApp.Tests.deps.json",
+    "TodoApp.Tests/bin/Debug/net9.0/xunit.runner.utility.netcoreapp10.dll",
+    "TodoApp.Tests/bin/Debug/net9.0/xunit.runner.reporters.netcoreapp10.dll",
+    "TodoApp.Tests/bin/Debug/net9.0/testhost.exe",
+    "TodoApp.Tests/bin/Debug/net9.0/xunit.runner.visualstudio.testadapter.dll",
+    "01_vision.md",
+    "03_data-model.md",
+    "04_openapi copy.md",
+    "README.md",
     "ia/OpenAPI.md",
     "ia/Mind_Map_SDD.md",
     "ia/04_Services_Specification.md",
@@ -200,24 +212,14 @@
     "ia/01_User_Stories.md",
     "ia/00_Vision_Overview.md",
     "ia/05_OpenAPI_Specs.md",
-    "ia",
-    "New folder",
     "00_Vision_Overview.md",
     "05_OpenAPI_Specs.md",
     "OpenAPI.md",
     "01_User_Stories.md",
-    "public/app.js",
-    "public/index.html",
-    "public",
-    "openapi.yaml",
-    "server.js",
-    "package.json",
     "Mind_Map_SDD.md",
     "04_Services_Specification.md",
     "03_Architecture_Notes.md",
     "02_Data_Model.md",
-    "01_Historias_Usuario.md",
-    "04_Especificacion_Servicios.md",
-    "Mapa_Mental_SDD.md"
+    "01_Historias_Usuario.md"
   ]
 }

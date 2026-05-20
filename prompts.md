@@ -234,7 +234,7 @@ No records are physically deleted from the database.
 
 * **State Control:** Active/inactive status is controlled via the `isActive` boolean flag.
 
-* **Boards:** Disabling a board soft-deletes it. By default, API queries only retrieve active (`isActive = true`) boards unless the `includeInactive` query parameter is explicitly set to `true`.
+* **Boards:** Disabling a board soft-deletes it. By default, API queries only retrieve active (`isActive = true`) boards unless the `` query parameter is explicitly set to `true`.
 
 * **Tasks:** Disabling a board or soft-deleting a task hides the tasks. By default, API queries return active tasks unless specified otherwise.
 
