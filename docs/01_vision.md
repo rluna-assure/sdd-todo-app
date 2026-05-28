@@ -16,7 +16,7 @@ This app is just rest services in backend using C# and .Net Core as library.
 
 #### Architecture
 Follow the next structure:
-Controller -> Service -> Data (Controller-Based Web APIs in .NET Core.)
+Controller -> Data Mocked in Service (Controller-Based Web APIs in .NET Core.)
 Stack:
  - REST
  - C#
